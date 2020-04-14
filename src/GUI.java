@@ -17,7 +17,7 @@ public class GUI {
 
     private final int PADDING = 15;
     private final int CELL_PADDING = 10;
-    private final int MENU_SPACING = 100;
+    private final int MENU_SPACING = 25;
     private final int GAME_SPACING = 10;
 
     private final int RADIUS = 30;
@@ -25,6 +25,7 @@ public class GUI {
     private final int BOARD_SIZE = Game.M * CELL_SIZE;
     private final int MENU_WIDTH = BOARD_SIZE;
     private final int MENU_HEIGHT = 40;
+    private final double BUTTON_WIDTH = (MENU_WIDTH - 2 * MENU_SPACING) / 3.0;
     private final int GAME_WIDTH = BOARD_SIZE + 2 * PADDING;
     private final int GAME_HEIGHT = BOARD_SIZE + MENU_HEIGHT + 2 * PADDING + GAME_SPACING;
     private final int GAME_INFO_WIDTH = GAME_WIDTH;
@@ -50,7 +51,10 @@ public class GUI {
     }
 
     private Button getButton(String text){
-        return new Button(text);
+        Button button = new Button(text);
+        button.setStyle("-fx-font: 17px Calibri;");
+        button.setPrefWidth(BUTTON_WIDTH);
+        return button;
     }
 
     private HBox getMenuUI(){
