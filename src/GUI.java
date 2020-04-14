@@ -66,19 +66,21 @@ public class GUI {
 
     private VBox getStone(int x, int y){
         stone[x][y] = new Circle(RADIUS);
-        stone[x][y].setFill(Color.valueOf("#dce3f5"));
-        stone[x][y].setStroke(Color.BLACK);
+        stone[x][y].setFill(Color.valueOf(GUIColour.UI_COLOUR));
 
         VBox cellUI = new VBox(stone[x][y]);
         cellUI.setPadding(new Insets(CELL_PADDING));
         setSize(cellUI, CELL_SIZE, CELL_SIZE);
 
         if (x == 0) {
-            cellUI.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> handleMouseClickOnCell.accept(y));
-            stone[x][y].setStrokeWidth(2);
+            stone[x][y].setStroke(Color.BLACK);
+            stone[x][y].setStrokeWidth(1.5);
             stone[x][y].getStrokeDashArray().addAll(6.7);
+            cellUI.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> handleMouseClickOnCell.accept(y));
         }
         else {
+            stone[x][y].setStroke(Color.DARKBLUE);
+            stone[x][y].setStrokeWidth(1.75);
             cellUI.setStyle(GUIColour.CELL);
         }
 
