@@ -2,11 +2,9 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -37,17 +35,22 @@ public class GUI {
     private Consumer<Integer> handleMouseClickOnCell;
 
     // force the size of panes
-    private void setSize(Pane pane, int width, int height) {
-        pane.setMinSize(width, height);
-        pane.setMaxSize(width, height);
+    private void setSize(Region region, double width, double height) {
+        region.setMinSize(width, height);
+        region.setMaxSize(width, height);
     }
 
     private VBox getGameInfoUI(){
-        // TODO set text
-        VBox gameInfo = new VBox();
-        setSize(gameInfo, GAME_INFO_WIDTH, GAME_INFO_HEIGHT);
-        gameInfo.setStyle(GUIColour.GAME_INFO);
-        return gameInfo;
+        Label gameInfo = new Label("GAME INFO");
+        setSize(gameInfo, GAME_INFO_WIDTH - 0 * 2, GAME_INFO_HEIGHT - 2 * 2);
+        gameInfo.setStyle(GUIColour.LABEL);
+        gameInfo.setAlignment(Pos.CENTER);
+
+        VBox gameInfoUI = new VBox(gameInfo);
+        setSize(gameInfoUI, GAME_INFO_WIDTH, GAME_INFO_HEIGHT);
+        gameInfoUI.setStyle(GUIColour.GAME_INFO);
+        gameInfoUI.setPadding(new Insets(2, 0, 2, 0));
+        return gameInfoUI;
     }
 
     private Button getButton(String text){
