@@ -42,7 +42,7 @@ public class GUI {
 
     private VBox getGameInfoUI(){
         Label gameInfo = new Label("GAME INFO");
-        setSize(gameInfo, GAME_INFO_WIDTH - 0 * 2, GAME_INFO_HEIGHT - 2 * 2);
+        setSize(gameInfo, GAME_INFO_WIDTH, GAME_INFO_HEIGHT - 4);
         gameInfo.setStyle(GUIColour.LABEL);
         gameInfo.setAlignment(Pos.CENTER);
 
