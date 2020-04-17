@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
@@ -32,7 +33,12 @@ public class GUI {
     private final int WINDOW_HEIGHT = GAME_INFO_HEIGHT + GAME_HEIGHT;
 
     private Circle[][] stone = new Circle[Game.N + 1][Game.M];
-    private Consumer<Integer> handleMouseClickOnCell;
+    private Consumer<Integer> handleClickOnCell;
+    private Consumer<PlayerEvent> handleClickOnMenu;
+
+    public void setStone(int x, int y, Paint colour){
+        stone[x][y].setFill(colour);
+    }
 
     // force the size of panes
     private void setSize(Region region, double width, double height) {
@@ -53,18 +59,19 @@ public class GUI {
         return gameInfoUI;
     }
 
-    private Button getButton(String text){
-        Button button = new Button(text);
+    private Button getButton(PlayerEvent e){
+        Button button = new Button(e.getText());
         button.setStyle("-fx-font: 17px Calibri;");
         button.setPrefWidth(BUTTON_WIDTH);
+        button.setOnMouseClicked(event -> handleClickOnMenu.accept(e));
         return button;
     }
 
     private HBox getMenuUI(){
         HBox menuUI = new HBox(
-                getButton("New Game"),
-                getButton("Change Game Mode"),
-                getButton("Undo"));
+                getButton(PlayerEvent.NEW_GAME),
+                getButton(PlayerEvent.CHANGE_GAME_MODE),
+                getButton(PlayerEvent.UNDO));
         menuUI.setAlignment(Pos.CENTER);
         setSize(menuUI, MENU_WIDTH, MENU_HEIGHT);
         menuUI.setSpacing(MENU_SPACING);
@@ -83,7 +90,7 @@ public class GUI {
             stone[x][y].setStroke(Color.BLACK);
             stone[x][y].setStrokeWidth(1.5);
             stone[x][y].getStrokeDashArray().addAll(6.7);
-            cellUI.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> handleMouseClickOnCell.accept(y));
+            cellUI.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> handleClickOnCell.accept(y));
         }
         else {
             stone[x][y].setStroke(Color.DARKBLUE);
@@ -124,8 +131,9 @@ public class GUI {
         return ui;
     }
 
-    public GUI(Stage primaryStage, Consumer<Integer> handleMouseClickOnCell_){
-        handleMouseClickOnCell = handleMouseClickOnCell_;
+    public GUI(Stage primaryStage, Consumer<Integer> handleClickOnCell_, Consumer<PlayerEvent> handleClickOnMenu_){
+        handleClickOnCell = handleClickOnCell_;
+        handleClickOnMenu = handleClickOnMenu_;
 
         primaryStage.setTitle("Connect 4");
         primaryStage.setResizable(false);
