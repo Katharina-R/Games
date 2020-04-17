@@ -7,4 +7,5 @@ public class Style {
     public static final String UI_COLOUR = "#dce3f5";
     public static final String RED = "#bd0404";
     public static final String YELLOW = "#f2c616";
+    public static final String EMPTY = "#dce3f5";
 }
