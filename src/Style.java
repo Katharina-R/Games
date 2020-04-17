@@ -1,4 +1,4 @@
-public class GUIColour {
+public class Style {
 
     public static final String LABEL = "-fx-background-color: #8897bf; -fx-font: 30px Calibri;";
     public static final String GAME_INFO = "-fx-background-color: #334d8f;";

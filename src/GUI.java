@@ -49,12 +49,12 @@ public class GUI {
     private VBox getGameInfoUI(){
         Label gameInfo = new Label("GAME INFO");
         setSize(gameInfo, GAME_INFO_WIDTH, GAME_INFO_HEIGHT - 4);
-        gameInfo.setStyle(GUIColour.LABEL);
+        gameInfo.setStyle(Style.LABEL);
         gameInfo.setAlignment(Pos.CENTER);
 
         VBox gameInfoUI = new VBox(gameInfo);
         setSize(gameInfoUI, GAME_INFO_WIDTH, GAME_INFO_HEIGHT);
-        gameInfoUI.setStyle(GUIColour.GAME_INFO);
+        gameInfoUI.setStyle(Style.GAME_INFO);
         gameInfoUI.setPadding(new Insets(2, 0, 2, 0));
         return gameInfoUI;
     }
@@ -80,7 +80,7 @@ public class GUI {
 
     private VBox getStone(int x, int y){
         stone[x][y] = new Circle(RADIUS);
-        stone[x][y].setFill(Color.valueOf(GUIColour.UI_COLOUR));
+        stone[x][y].setFill(Color.valueOf(Style.UI_COLOUR));
 
         VBox cellUI = new VBox(stone[x][y]);
         cellUI.setPadding(new Insets(CELL_PADDING));
@@ -95,7 +95,7 @@ public class GUI {
         else {
             stone[x][y].setStroke(Color.DARKBLUE);
             stone[x][y].setStrokeWidth(1.75);
-            cellUI.setStyle(GUIColour.CELL);
+            cellUI.setStyle(Style.CELL);
         }
 
         return cellUI;
@@ -127,7 +127,7 @@ public class GUI {
         VBox ui = new VBox(getGameInfoUI(), getGameUI());
         ui.setPadding(new Insets(0));
         setSize(ui, WINDOW_WIDTH, WINDOW_HEIGHT);
-        ui.setStyle(GUIColour.UI);
+        ui.setStyle(Style.UI);
         return ui;
     }
 
