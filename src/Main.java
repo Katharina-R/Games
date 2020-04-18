@@ -8,7 +8,7 @@ import java.util.Vector;
 
 public class Main extends Application {
 
-    private GameMode gameMode = GameMode.PvC;
+    private GameMode gameMode = GameMode.PvP;
     private Game game;
     private GUI gui;
     private Thread gameThread;
@@ -121,6 +121,23 @@ public class Main extends Application {
         }
     }
 
+    private boolean handleMenuButton(){
+        if (playerEvent == PlayerEvent.NEW_GAME) {
+            game = new Game();
+            return true;
+        }
+        if (playerEvent == PlayerEvent.CHANGE_GAME_MODE) {
+            // TODO: change game mode
+            return true;
+        }
+        if (playerEvent == PlayerEvent.UNDO) {
+            game.rollBack();
+            return true;
+        }
+
+        return false;
+    }
+
     private void gameLoop(){
         System.out.println("started game loop");
 
@@ -129,57 +146,57 @@ public class Main extends Application {
 
         int move;
 
-        while(!game.isOver()){
+        do {
+            while (!game.isOver()) {
+                updateGUI();
+                // TODO: mark possible moves
 
+                Platform.runLater(() -> gui.setGameInfo(playerText(game.getCurPlayer()) + "'s turn!"));
+
+                if (isPlayerMove()) {
+                    try {
+                        move = getPlayerMove();
+                    } catch (InterruptedException e) {
+                        return;
+                    }
+
+                    if(handleMenuButton()) continue;
+
+                } else {
+                    move = Minimax.getMove(game, 10);
+                }
+
+                game.makeMove(move);
+            }
+
+            // make last move
             updateGUI();
-            // TODO: mark possible moves
 
+            // get winner
+            Vector<Pair<Integer, Integer>> winningStones = game.getGameStatus();
 
-            Platform.runLater(() -> gui.setGameInfo(playerText(game.getCurPlayer()) + "'s turn!"));
+            if (winningStones.isEmpty()) {
+                Platform.runLater(() -> gui.setGameInfo("Draw!"));
+            } else {
+                Platform.runLater(() -> gui.setGameInfo(playerText(Game.enemy(game.getCurPlayer())) + " won!"));
 
-            if(isPlayerMove()){
+                // mark winning pieces
+                greyOutGUI();
+                markWinningStones(winningStones);
+            }
+
+            // user didn't undo / start a new game
+            do{
+                // get input from menu buttons
                 try {
-                    move = getPlayerMove();
+                    getPlayerEvent(0);
                 } catch (InterruptedException e) {
                     return;
                 }
 
-                if(playerEvent == PlayerEvent.NEW_GAME){
-                    //TODO: new game
-                    break;
-                }
-                else if(playerEvent == PlayerEvent.CHANGE_GAME_MODE){
-                    // TODO: change game mode
-                    continue;
-                }
-                else if(playerEvent == PlayerEvent.UNDO){
-                    game.rollBack();
-                    continue;
-                }
-            }
-            else{
-                move = Minimax.getMove(game, 7);
-            }
-
-            game.makeMove(move);
-        }
-
-        // make last move
-        updateGUI();
-
-        // get winner
-        Vector<Pair<Integer, Integer>> winningStones = game.getGameStatus();
-
-        if(winningStones.isEmpty()) {
-            Platform.runLater(() -> gui.setGameInfo("Draw!"));
-        }
-        else {
-            Platform.runLater(() -> gui.setGameInfo(playerText(Game.enemy(game.getCurPlayer())) + " won!"));
-
-            // mark winning pieces
-            greyOutGUI();
-            markWinningStones(winningStones);
-        }
+                handleMenuButton();
+            } while(playerEvent != PlayerEvent.UNDO && playerEvent != PlayerEvent.NEW_GAME);
+        } while(true);
     }
 
     @Override
