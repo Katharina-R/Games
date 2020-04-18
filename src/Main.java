@@ -8,6 +8,7 @@ import java.util.Vector;
 
 public class Main extends Application {
 
+
     private GameMode gameMode = GameMode.PvP;
     private Game game;
     private GUI gui;
@@ -28,14 +29,11 @@ public class Main extends Application {
 
     private synchronized void getPlayerEvent(int timeout) throws InterruptedException {
         userInputEnabled = true;
-        System.out.println("wait");
         wait(timeout);
-        System.out.println("stopped waiting");
         userInputEnabled = false;
     }
 
     private synchronized void handleMouseClickOnCell(int y) {
-        System.out.format("User clicked on %d\n", y);
 
         if(!userInputEnabled) return;
 
@@ -46,13 +44,20 @@ public class Main extends Application {
     }
 
     private synchronized void handleMouseClickOnMenu(PlayerEvent e) {
-        System.out.println("User clicked on " + e.getText());
 
         if(!userInputEnabled) return;
 
         playerEvent = e;
 
         notify(); // notify gameThread in getPlayerEvent
+    }
+
+    private synchronized void setGameMode(GameMode gameMode_){
+
+        gameMode = gameMode_;
+        playerEvent = PlayerEvent.CHANGE_GAME_MODE;
+
+        notify();
     }
 
     private int getPlayerMove() throws InterruptedException{
@@ -127,7 +132,6 @@ public class Main extends Application {
             return true;
         }
         if (playerEvent == PlayerEvent.CHANGE_GAME_MODE) {
-            // TODO: change game mode
             return true;
         }
         if (playerEvent == PlayerEvent.UNDO) {
@@ -143,6 +147,7 @@ public class Main extends Application {
 
         // init game
         game = new Game();
+        Platform.runLater(() -> gui.setGameMode(gameMode));
 
         int move;
 
@@ -163,7 +168,7 @@ public class Main extends Application {
                     if(handleMenuButton()) continue;
 
                 } else {
-                    move = Minimax.getMove(game, 10);
+                    move = Minimax.getMove(game, 12);
                 }
 
                 game.makeMove(move);
@@ -203,7 +208,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
 
         // create user interface
-        gui = new GUI(primaryStage, this::handleMouseClickOnCell, this::handleMouseClickOnMenu);
+        gui = new GUI(primaryStage, this::handleMouseClickOnCell, this::handleMouseClickOnMenu, this::setGameMode);
 
         // start game thread
         gameThread = new Thread(this::gameLoop);

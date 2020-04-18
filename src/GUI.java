@@ -1,7 +1,10 @@
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -15,6 +18,7 @@ import java.util.function.Consumer;
 public class GUI {
 
     private final int PADDING = 15;
+    private final int MENU_PADDING = 3;
     private final int CELL_PADDING = 10;
     private final int MENU_SPACING = 25;
     private final int GAME_SPACING = 10;
@@ -25,6 +29,7 @@ public class GUI {
     private final int MENU_WIDTH = BOARD_SIZE;
     private final int MENU_HEIGHT = 40;
     private final double BUTTON_WIDTH = (MENU_WIDTH - 2 * MENU_SPACING) / 3.0;
+    private final double BUTTON_HEIGHT = MENU_HEIGHT - 2 * MENU_PADDING;
     private final int GAME_WIDTH = BOARD_SIZE + 2 * PADDING;
     private final int GAME_HEIGHT = BOARD_SIZE + MENU_HEIGHT + 2 * PADDING + GAME_SPACING;
     private final int GAME_INFO_WIDTH = GAME_WIDTH;
@@ -34,8 +39,10 @@ public class GUI {
 
     private Circle[][] stone = new Circle[Game.N + 1][Game.M];
     private Label gameInfo;
+    private ComboBox<GameMode> gameMode;
     private Consumer<Integer> handleClickOnCell;
     private Consumer<PlayerEvent> handleClickOnMenu;
+    private Consumer<GameMode> setGameMode;
 
     public void setStone(int x, int y, Paint colour){
         stone[x + 1][y].setFill(colour);
@@ -49,6 +56,10 @@ public class GUI {
 
     public void setGameInfo(String text){
         gameInfo.setText(text);
+    }
+
+    public void setGameMode(GameMode gameMode_){
+        gameMode.setValue(gameMode_);
     }
 
     private VBox getGameInfoUI(){
@@ -66,20 +77,27 @@ public class GUI {
 
     private Button getButton(PlayerEvent e){
         Button button = new Button(e.getText());
-        button.setStyle("-fx-font: 17px Calibri;");
-        button.setPrefWidth(BUTTON_WIDTH);
+        button.setStyle(Style.BUTTON);
+        setSize(button, BUTTON_WIDTH, BUTTON_HEIGHT);
         button.setOnMouseClicked(event -> handleClickOnMenu.accept(e));
         return button;
     }
 
     private HBox getMenuUI(){
+        ObservableList<GameMode> l = FXCollections.observableArrayList(GameMode.values());
+        gameMode = new ComboBox<>(l);
+        setSize(gameMode, BUTTON_WIDTH, BUTTON_HEIGHT);
+        gameMode.setStyle(Style.BUTTON);
+        gameMode.setOnAction(event -> setGameMode.accept(gameMode.getValue()));
+
         HBox menuUI = new HBox(
                 getButton(PlayerEvent.NEW_GAME),
-                getButton(PlayerEvent.CHANGE_GAME_MODE),
+                gameMode,
                 getButton(PlayerEvent.UNDO));
         menuUI.setAlignment(Pos.CENTER);
         setSize(menuUI, MENU_WIDTH, MENU_HEIGHT);
         menuUI.setSpacing(MENU_SPACING);
+        menuUI.setPadding(new Insets(MENU_PADDING));
         return menuUI;
     }
 
@@ -136,9 +154,10 @@ public class GUI {
         return ui;
     }
 
-    public GUI(Stage primaryStage, Consumer<Integer> handleClickOnCell_, Consumer<PlayerEvent> handleClickOnMenu_){
+    public GUI(Stage primaryStage, Consumer<Integer> handleClickOnCell_, Consumer<PlayerEvent> handleClickOnMenu_, Consumer<GameMode> setGameMode_){
         handleClickOnCell = handleClickOnCell_;
         handleClickOnMenu = handleClickOnMenu_;
+        setGameMode = setGameMode_;
 
         primaryStage.setTitle("Connect 4");
         primaryStage.setResizable(false);

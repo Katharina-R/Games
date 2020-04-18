@@ -1,6 +1,7 @@
 public class Style {
 
-    public static final String LABEL = "-fx-background-color: #8897bf; -fx-font: 30px Calibri;";
+    public static final String BUTTON = "-fx-font: 14px Verdana;";
+    public static final String LABEL = "-fx-background-color: #8897bf; -fx-font: 30px Verdana;";
     public static final String GAME_INFO = "-fx-background-color: #334d8f;";
     public static final String CELL = " -fx-background-color: #2E64E8;";
     public static final String UI = "-fx-background-color: #dce3f5;";

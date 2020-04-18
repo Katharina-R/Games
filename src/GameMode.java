@@ -1,8 +1,8 @@
 public enum GameMode {
     PvP ("Player vs Player"),
-    PvC ("Player vs Computer"),
-    CvP ("Computer vs Player"),
-    CvC ("Computer vs Computer");
+    PvC ("Player vs AI"),
+    CvP ("AI vs Player"),
+    CvC ("AI vs AI");
 
     String text;
 
@@ -10,7 +10,7 @@ public enum GameMode {
         this.text = text;
     }
 
-    public String getText(){
+    public String toString(){
         return text;
     }
 }
