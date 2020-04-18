@@ -24,7 +24,7 @@ public class Minimax {
 
     private static Game game;
 
-    private static Move solve(int height){
+    private static Move solve(int height, int alpha, int beta){
 
         Vector<Integer> moves = game.getMoves();
 
@@ -40,12 +40,21 @@ public class Minimax {
 
         for(int move : moves){
             game.makeMove(move);
-            cur = solve(height -1);
+            cur = solve(height -1, alpha, beta);
             game.rollBack();
 
             cur.move = move;
-            if(game.getCurPlayer() == Game.YELLOW) best = max(cur, best);
-            else best = min(cur, best);
+            if(game.getCurPlayer() == Game.YELLOW) {
+                best = max(cur, best);
+                alpha = Math.max(alpha, best.winner);
+            }
+            else {
+                best = min(cur, best);
+                beta = Math.min(beta, best.winner);
+            }
+
+            // prune
+            if(alpha >= beta || alpha == Game.YELLOW || beta == Game.RED) break;
         }
 
         return best;
@@ -54,6 +63,6 @@ public class Minimax {
     public static int getMove(Game game_, int max_depth){
 
         game = game_;
-        return solve(max_depth).move;
+        return solve(max_depth, Integer.MIN_VALUE, Integer.MAX_VALUE).move;
     }
 }
