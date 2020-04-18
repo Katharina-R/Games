@@ -74,9 +74,17 @@ public class Main extends Application {
 
         for(int x = 0; x < Game.N; x++){
             for(int y = 0; y < Game.M; y++){
-                if(game.getStone(x, y) == Game.YELLOW) gui.setStone(x + 1, y, Paint.valueOf(Style.YELLOW));
-                else if(game.getStone(x, y) == Game.RED) gui.setStone(x + 1, y, Paint.valueOf(Style.RED));
-                else gui.setStone(x + 1, y, Paint.valueOf(Style.EMPTY));
+                int finalX = x, finalY = y;
+
+                if(game.getStone(x, y) == Game.YELLOW) {
+                    Platform.runLater(() -> gui.setStone(finalX, finalY, Paint.valueOf(Style.YELLOW)));
+                }
+                else if(game.getStone(x, y) == Game.RED) {
+                    Platform.runLater(() -> gui.setStone(finalX, finalY, Paint.valueOf(Style.RED)));
+                }
+                else {
+                    Platform.runLater(() -> gui.setStone(finalX, finalY, Paint.valueOf(Style.EMPTY)));
+                }
             }
         }
     }
@@ -85,6 +93,32 @@ public class Main extends Application {
         if(p == Game.YELLOW) return "Yellow";
         if (p == Game.RED) return "Red";
         return "Empty";
+    }
+
+    private void greyOutGUI(){
+        for(int x = 0; x < Game.N; x++){
+            for(int y = 0; y < Game.M; y++){
+                int finalX = x, finalY = y;
+
+                if(game.getStone(x, y) == Game.YELLOW) {
+                    Platform.runLater(() -> gui.setStone(finalX, finalY, Paint.valueOf(Style.YELLOW_LIGHT)));
+                }
+                else if(game.getStone(x, y) == Game.RED) {
+                    Platform.runLater(() -> gui.setStone(finalX, finalY, Paint.valueOf(Style.RED_LIGHT)));
+                }
+            }
+        }
+    }
+
+    private void markWinningStones(Vector<Pair<Integer, Integer>> stones){
+        for(Pair<Integer, Integer> stone: stones){
+            if(game.getStone(stone.getKey(), stone.getValue()) == Game.YELLOW){
+                Platform.runLater(() -> gui.setStone(stone.getKey(), stone.getValue(), Paint.valueOf(Style.YELLOW)));
+            }
+            else {
+                Platform.runLater(() -> gui.setStone(stone.getKey(), stone.getValue(), Paint.valueOf(Style.RED)));
+            }
+        }
     }
 
     private void gameLoop(){
@@ -140,6 +174,10 @@ public class Main extends Application {
         }
         else {
             Platform.runLater(() -> gui.setGameInfo(playerText(Game.enemy(game.getCurPlayer())) + " won!"));
+
+            // mark winning pieces
+            greyOutGUI();
+            markWinningStones(winningStones);
         }
     }
 

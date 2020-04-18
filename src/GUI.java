@@ -38,7 +38,7 @@ public class GUI {
     private Consumer<PlayerEvent> handleClickOnMenu;
 
     public void setStone(int x, int y, Paint colour){
-        stone[x][y].setFill(colour);
+        stone[x + 1][y].setFill(colour);
     }
 
     // force the size of panes
