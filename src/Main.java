@@ -8,7 +8,7 @@ import java.util.Vector;
 
 public class Main extends Application {
 
-    private GameMode gameMode = GameMode.PvP;
+    private GameMode gameMode = GameMode.PvC;
     private Game game;
     private GUI gui;
     private Thread gameThread;
@@ -156,14 +156,12 @@ public class Main extends Application {
                     game.rollBack();
                     continue;
                 }
-
-                game.makeMove(move);
             }
             else{
-
-                // TODO: get ai move
-                //TODO: set stone
+                move = Minimax.getMove(game, 7);
             }
+
+            game.makeMove(move);
         }
 
         // make last move
