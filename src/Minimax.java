@@ -1,3 +1,6 @@
+import javafx.util.Pair;
+
+import java.util.HashMap;
 import java.util.Vector;
 
 public class Minimax {
@@ -23,6 +26,7 @@ public class Minimax {
     }
 
     private static Game game;
+    private static HashMap<Pair<Long, Long>, Move> dp = new HashMap<>();
 
     private static Move solve(int height, int alpha, int beta){
 
@@ -33,8 +37,13 @@ public class Minimax {
             return new Move(-1, game.getWinner());
         }
 
+        // reached max height
         if(height < 0) return new Move(-1, 0);
 
+        // already calculated state
+        if (dp.containsKey(game.getCurState())) return dp.get(game.getCurState());
+
+        // test next moves
         Move cur;
         Move best = new Move(-1, 2 * Game.enemy(game.getCurPlayer()) );
 
@@ -57,12 +66,14 @@ public class Minimax {
             if(alpha >= beta || alpha == Game.YELLOW || beta == Game.RED) break;
         }
 
+        dp.put(game.getCurState(), best);
         return best;
     }
 
     public static int getMove(Game game_, int max_depth){
 
         game = game_;
+        dp.clear();
         return solve(max_depth, Integer.MIN_VALUE, Integer.MAX_VALUE).move;
     }
 }
