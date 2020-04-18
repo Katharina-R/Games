@@ -1,5 +1,6 @@
 import javafx.util.Pair;
 
+import java.util.Stack;
 import java.util.Vector;
 
 import static java.lang.Math.abs;
@@ -16,6 +17,7 @@ public class Game {
 
     private int [][] board = new int[N][M]; // initializes with 0 = EMPTY
     private static final int [][] DIR = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}};
+    private Stack<Pair<Long, Long>> history = new Stack<>();
 
 
     private static boolean isInside(int x, int y){
@@ -36,6 +38,71 @@ public class Game {
 
     public int getCurPlayer(){
         return player;
+    }
+
+    private Pair<Long, Long> convertToState(){
+        long yellow = 0, red = 0, pow = 1;
+
+        for(int x = 0; x < N; x++){
+            for(int y = 0; y < M; y++){
+                if(board[x][y] == YELLOW){
+                    yellow |= pow;
+                }
+                if(board[x][y] == RED){
+                    red |= pow;
+                }
+
+                pow *= 2;
+            }
+        }
+
+        return new Pair<>(yellow, red);
+    }
+
+    private void loadGame(Pair<Long, Long> state){
+
+        long yellow = state.getKey();
+        long red = state.getValue();
+        int cy = 0, cr = 0;
+
+        // get board
+        for(int x = 0; x < N; x++){
+            for(int y = 0; y < M; y++){
+
+                if(yellow % 2 == 1) {
+                    board[x][y] = YELLOW;
+                    cy++;
+                }
+                else if(red % 2 == 1) {
+                    board[x][y] = RED;
+                    cr++;
+                }
+                else {
+                    board[x][y] = EMPTY;
+                }
+
+                yellow /= 2;
+                red /= 2;
+            }
+        }
+
+        // get player
+        if(cy == cr) player = YELLOW;
+        else player = RED;
+    }
+
+    public Pair<Long, Long> getCurState(){
+        return history.peek();
+    }
+
+    public void rollBack(){
+
+         // cannot roll back
+        if(history.size() <= 1) return;
+
+        // roll back
+        history.pop();
+        loadGame(history.peek());
     }
 
     private boolean isColumnFull(int col){
@@ -59,6 +126,7 @@ public class Game {
         }
 
         player = -player;
+        history.push(convertToState());
     }
 
     // game is not over -> return: null
@@ -132,5 +200,9 @@ public class Game {
             if(isValidMove(col)) moves.add(col);
         }
         return moves;
+    }
+
+    public Game(){
+        history.push(convertToState());
     }
 }

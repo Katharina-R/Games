@@ -131,7 +131,9 @@ public class Main extends Application {
 
         while(!game.isOver()){
 
+            updateGUI();
             // TODO: mark possible moves
+
 
             Platform.runLater(() -> gui.setGameInfo(playerText(game.getCurPlayer()) + "'s turn!"));
 
@@ -151,7 +153,7 @@ public class Main extends Application {
                     continue;
                 }
                 else if(playerEvent == PlayerEvent.UNDO){
-                    // TODO: undo
+                    game.rollBack();
                     continue;
                 }
 
@@ -162,9 +164,10 @@ public class Main extends Application {
                 // TODO: get ai move
                 //TODO: set stone
             }
-
-            updateGUI();
         }
+
+        // make last move
+        updateGUI();
 
         // get winner
         Vector<Pair<Integer, Integer>> winningStones = game.getGameStatus();
