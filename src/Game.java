@@ -10,14 +10,15 @@ public class Game {
     public static final int N = 6; // rows
     public static final int M = 7; // columns
 
-    public static final int YELLOW = -1;
-    public static final int RED = 1;
+    public static final int YELLOW = 1;
+    public static final int RED = -1;
     public static final int EMPTY = 0;
     private int player = YELLOW;
 
     private int [][] board = new int[N][M]; // initializes with 0 = EMPTY
     private static final int [][] DIR = {{1, 0}, {1, 1}, {0, 1}, {-1, 1}};
     private Stack<Pair<Long, Long>> history = new Stack<>();
+    private int winner = EMPTY;
 
 
     private static boolean isInside(int x, int y){
@@ -187,7 +188,24 @@ public class Game {
     }
 
     public boolean isOver(){
-        return getGameStatus() != null;
+        Vector<Pair<Integer, Integer>> v = getGameStatus();
+
+        if(v == null) {
+            winner = EMPTY;
+            return false;
+        }
+        else if (v.isEmpty()){ // draw
+            winner = EMPTY;
+            return true;
+        }
+        else {
+            winner = enemy(getCurPlayer());
+            return true;
+        }
+    }
+
+    public int getWinner(){
+        return winner;
     }
 
     public Vector<Integer> getMoves(){
