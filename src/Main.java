@@ -1,6 +1,10 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
+import javafx.util.Pair;
+
+import java.util.Vector;
 
 public class Main extends Application {
 
@@ -14,7 +18,7 @@ public class Main extends Application {
     private int lastClicked;
 
     private boolean isPlayerMove(){
-        if(game.getCurrentPlayer() == Game.YELLOW){
+        if(game.getCurPlayer() == Game.YELLOW){
             return (gameMode == GameMode.PvP) || (gameMode == GameMode.PvC);
         }
         else{
@@ -77,6 +81,12 @@ public class Main extends Application {
         }
     }
 
+    private String playerText(int p){
+        if(p == Game.YELLOW) return "Yellow";
+        if (p == Game.RED) return "Red";
+        return "Empty";
+    }
+
     private void gameLoop(){
         System.out.println("started game loop");
 
@@ -88,6 +98,8 @@ public class Main extends Application {
         while(!game.isOver()){
 
             // TODO: mark possible moves
+
+            Platform.runLater(() -> gui.setGameInfo(playerText(game.getCurPlayer()) + "'s turn!"));
 
             if(isPlayerMove()){
                 try {
@@ -118,6 +130,16 @@ public class Main extends Application {
             }
 
             updateGUI();
+        }
+
+        // get winner
+        Vector<Pair<Integer, Integer>> winningStones = game.getGameStatus();
+
+        if(winningStones.isEmpty()) {
+            Platform.runLater(() -> gui.setGameInfo("Draw!"));
+        }
+        else {
+            Platform.runLater(() -> gui.setGameInfo(playerText(Game.enemy(game.getCurPlayer())) + " won!"));
         }
     }
 

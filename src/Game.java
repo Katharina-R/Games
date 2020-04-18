@@ -26,11 +26,15 @@ public class Game {
         return Math.max(abs(xf - xi), abs(yf - yi));
     }
 
+    public static int enemy(int p){
+        return -p;
+    }
+
     public int getStone(int x, int y){
         return board[x][y];
     }
 
-    public int getCurrentPlayer(){
+    public int getCurPlayer(){
         return player;
     }
 
@@ -49,7 +53,7 @@ public class Game {
         // find next free cell
         for(int row = N-1; row >= 0; row--){
             if(board[row][col] == EMPTY) {
-                board[row][col] = getCurrentPlayer();
+                board[row][col] = getCurPlayer();
                 break;
             }
         }

@@ -33,6 +33,7 @@ public class GUI {
     private final int WINDOW_HEIGHT = GAME_INFO_HEIGHT + GAME_HEIGHT;
 
     private Circle[][] stone = new Circle[Game.N + 1][Game.M];
+    private Label gameInfo;
     private Consumer<Integer> handleClickOnCell;
     private Consumer<PlayerEvent> handleClickOnMenu;
 
@@ -46,8 +47,12 @@ public class GUI {
         region.setMaxSize(width, height);
     }
 
+    public void setGameInfo(String text){
+        gameInfo.setText(text);
+    }
+
     private VBox getGameInfoUI(){
-        Label gameInfo = new Label("GAME INFO");
+        gameInfo = new Label("GAME INFO");
         setSize(gameInfo, GAME_INFO_WIDTH, GAME_INFO_HEIGHT - 4);
         gameInfo.setStyle(Style.LABEL);
         gameInfo.setAlignment(Pos.CENTER);
