@@ -172,7 +172,7 @@ public class Main extends Application {
 
     private int getAIMove(long timeout) throws InterruptedException {
         long t = System.currentTimeMillis();
-        int move = Minimax.getMove(game, 12);
+        int move = Minimax.getMove(game, timeout);
         t = System.currentTimeMillis() - t;
         Thread.sleep(Math.max(0, timeout - t));
         return move;

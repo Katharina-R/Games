@@ -70,10 +70,20 @@ public class Minimax {
         return best;
     }
 
-    public static int getMove(Game game_, int max_depth){
+    public static int getMove(Game game_, long timeout){
 
+        long start = System.currentTimeMillis();
+        int max_depth = 0;
+        Move move;
         game = game_;
-        dp.clear();
-        return solve(max_depth, Integer.MIN_VALUE, Integer.MAX_VALUE).move;
+
+        do{
+            move = solve(max_depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            max_depth++;
+            dp.clear();
+
+        } while((System.currentTimeMillis() - start) < timeout);
+
+        return move.move;
     }
 }
