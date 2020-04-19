@@ -10,5 +10,7 @@ public class Style {
     public static final String RED_LIGHT = "#BD7272";
     public static final String YELLOW = "#f2c616";
     public static final String YELLOW_LIGHT = "#F3E5AA";
-    public static final String EMPTY = "#dce3f5";
+    public static final String EMPTY = UI_COLOUR;
+    public static final String BLACK = "000000";
+    public static final String LIGHT_GREY = "BEBEC1";
 }

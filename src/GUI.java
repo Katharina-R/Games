@@ -40,9 +40,14 @@ public class GUI {
     private Circle[][] stone = new Circle[Game.N + 1][Game.M];
     private Label gameInfo;
     private ComboBox<GameMode> gameMode;
-    private Consumer<Integer> handleClickOnCell;
+    private Consumer<Integer> handleCellPressed;
+    private Consumer<Integer> handleCellReleased;
     private Consumer<PlayerEvent> handleClickOnMenu;
     private Consumer<GameMode> setGameMode;
+
+    public void setStroke(int y, String style){
+        stone[0][y].setStroke(Paint.valueOf(style));
+    }
 
     public void setStone(int x, int y, Paint colour){
         stone[x + 1][y].setFill(colour);
@@ -113,7 +118,12 @@ public class GUI {
             stone[x][y].setStroke(Color.BLACK);
             stone[x][y].setStrokeWidth(1.5);
             stone[x][y].getStrokeDashArray().addAll(6.7);
-            cellUI.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> handleClickOnCell.accept(y));
+            cellUI.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+                if(event.getClickCount() == 1) handleCellPressed.accept(y); // ignore multiple clicks
+            });
+            cellUI.addEventFilter(MouseEvent.MOUSE_RELEASED, event -> {
+                if(event.getClickCount() == 1) handleCellReleased.accept(y); // ignore multiple clicks
+            });
         }
         else {
             stone[x][y].setStroke(Color.DARKBLUE);
@@ -154,8 +164,9 @@ public class GUI {
         return ui;
     }
 
-    public GUI(Stage primaryStage, Consumer<Integer> handleClickOnCell_, Consumer<PlayerEvent> handleClickOnMenu_, Consumer<GameMode> setGameMode_){
-        handleClickOnCell = handleClickOnCell_;
+    public GUI(Stage primaryStage, Consumer<Integer> handleCellPressed_, Consumer<Integer> handleCellReleased_, Consumer<PlayerEvent> handleClickOnMenu_, Consumer<GameMode> setGameMode_){
+        handleCellPressed = handleCellPressed_;
+        handleCellReleased = handleCellReleased_;
         handleClickOnMenu = handleClickOnMenu_;
         setGameMode = setGameMode_;
 

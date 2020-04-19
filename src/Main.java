@@ -1,5 +1,6 @@
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -33,9 +34,30 @@ public class Main extends Application {
         userInputEnabled = false;
     }
 
-    private synchronized void handleMouseClickOnCell(int y) {
+    private synchronized void handleCellPressed(int y) {
 
         if(!userInputEnabled) return;
+
+        if(game.getCurPlayer() == Game.YELLOW){
+            Platform.runLater(() -> gui.setStone(-1, y, Paint.valueOf(Style.YELLOW)));
+        }
+        else {
+            Platform.runLater(() -> gui.setStone(-1, y, Paint.valueOf(Style.RED)));
+        }
+    }
+
+    private synchronized void handleCellReleased(int y) {
+
+        if(!userInputEnabled) return;
+
+        try {
+            Thread.sleep(150);
+        } catch (InterruptedException e) {
+            gameThread.interrupt();
+            return;
+        }
+
+        Platform.runLater(() -> gui.setStone(-1, y, Paint.valueOf(Style.EMPTY)));
 
         playerEvent = PlayerEvent.MOVE;
         lastClicked = y;
@@ -76,6 +98,12 @@ public class Main extends Application {
     }
 
     private void updateGUI(){
+
+        for(int y = 0; y < Game.M; y++){
+            int finalY = y;
+            if(game.isValidMove(y)) Platform.runLater(() -> gui.setStroke(finalY, Style.BLACK));
+            else Platform.runLater(() -> gui.setStroke(finalY, Style.LIGHT_GREY));
+        }
 
         for(int x = 0; x < Game.N; x++){
             for(int y = 0; y < Game.M; y++){
@@ -214,7 +242,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
 
         // create user interface
-        gui = new GUI(primaryStage, this::handleMouseClickOnCell, this::handleMouseClickOnMenu, this::setGameMode);
+        gui = new GUI(primaryStage, this::handleCellPressed, this::handleCellReleased, this::handleMouseClickOnMenu, this::setGameMode);
 
         // start game thread
         gameThread = new Thread(this::gameLoop);
