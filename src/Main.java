@@ -142,6 +142,14 @@ public class Main extends Application {
         return false;
     }
 
+    private int getAIMove(long timeout) throws InterruptedException {
+        long t = System.currentTimeMillis();
+        int move = Minimax.getMove(game, 12);
+        t = System.currentTimeMillis() - t;
+        Thread.sleep(Math.max(0, timeout - t));
+        return move;
+    }
+
     private void gameLoop(){
         System.out.println("started game loop");
 
@@ -158,17 +166,15 @@ public class Main extends Application {
 
                 Platform.runLater(() -> gui.setGameInfo(playerText(game.getCurPlayer()) + "'s turn!"));
 
-                if (isPlayerMove()) {
-                    try {
+                try {
+                    if (isPlayerMove()) {
                         move = getPlayerMove();
-                    } catch (InterruptedException e) {
-                        return;
+                        if(handleMenuButton()) continue;
+                    } else {
+                        move = getAIMove(2 * 1000);
                     }
-
-                    if(handleMenuButton()) continue;
-
-                } else {
-                    move = Minimax.getMove(game, 12);
+                } catch (InterruptedException e) {
+                    return;
                 }
 
                 game.makeMove(move);
