@@ -125,7 +125,7 @@ public class Main extends Application {
     private String playerText(int p){
         if(p == Game.YELLOW) return "Yellow";
         if (p == Game.RED) return "Red";
-        return "Empty";
+        return "Draw";
     }
 
     private void greyOutGUI(){
@@ -172,10 +172,15 @@ public class Main extends Application {
 
     private int getAIMove(long timeout) throws InterruptedException {
         long t = System.currentTimeMillis();
-        int move = Minimax.getMove(game, timeout);
+
+        Pair<Minimax.Move, Integer> res = Minimax.getMove(game, timeout);
+        if(res.getKey().isOptimal) System.out.format("%s will win!\n", playerText(res.getKey().winner));
+
         t = System.currentTimeMillis() - t;
+        System.out.format("Time: %d Depth: %d\n", t, res.getValue());
         Thread.sleep(Math.max(0, timeout - t));
-        return move;
+
+        return res.getKey().move;
     }
 
     private void gameLoop(){
@@ -199,7 +204,7 @@ public class Main extends Application {
                         move = getPlayerMove();
                         if(handleMenuButton()) continue;
                     } else {
-                        move = getAIMove(2 * 1000);
+                        move = getAIMove(1500);
                     }
                 } catch (InterruptedException e) {
                     return;

@@ -7,10 +7,12 @@ public class Minimax {
 
     public static class Move {
         int move;
+        boolean isOptimal;
         int winner;
 
-        Move (int move_, int winner_){
+        Move (int move_, boolean isOptimal_, int winner_){
             move = move_;
+            isOptimal = isOptimal_;
             winner = winner_;
         }
     }
@@ -34,23 +36,26 @@ public class Minimax {
 
         // game over
         if(moves.isEmpty()){
-            return new Move(-1, game.getWinner());
+            return new Move(-1, true, game.getWinner());
         }
 
         // reached max height
-        if(height < 0) return new Move(-1, 0);
+        if(height < 0) return new Move(-1, false, 0);
 
         // already calculated state
         if (dp.containsKey(game.getCurState())) return dp.get(game.getCurState());
 
         // test next moves
         Move cur;
-        Move best = new Move(-1, 2 * Game.enemy(game.getCurPlayer()) );
+        Move best = new Move(-1, false,2 * Game.enemy(game.getCurPlayer()) );
+        int notOptimal = 0;
 
         for(int move : moves){
             game.makeMove(move);
             cur = solve(height -1, alpha, beta);
             game.rollBack();
+
+            if(!cur.isOptimal) notOptimal++;
 
             cur.move = move;
             if(game.getCurPlayer() == Game.YELLOW) {
@@ -66,24 +71,34 @@ public class Minimax {
             if(alpha >= beta || alpha == Game.YELLOW || beta == Game.RED) break;
         }
 
+        // set isOptimal for chosen move
+        best.isOptimal = (notOptimal == 0) || (best.winner == game.getCurPlayer());
+
         dp.put(game.getCurState(), best);
         return best;
     }
 
-    public static int getMove(Game game_, long timeout){
+    private static void clearDP(){
+
+        // remove uninteresting results
+        dp.entrySet().removeIf(e -> !e.getValue().isOptimal);
+    }
+
+
+    public static Pair<Move, Integer> getMove(Game game_, long timeout){
 
         long start = System.currentTimeMillis();
-        int max_depth = 0;
+        int max_depth = -1;
         Move move;
         game = game_;
 
         do{
-            move = solve(max_depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
             max_depth++;
-            dp.clear();
+            move = solve(max_depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
+            clearDP();
 
-        } while((System.currentTimeMillis() - start) < timeout);
+        } while(!move.isOptimal && (System.currentTimeMillis() - start) < timeout);
 
-        return move.move;
+        return new Pair<>(move, max_depth);
     }
 }
