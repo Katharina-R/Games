@@ -41,6 +41,10 @@ public class Game {
         return player;
     }
 
+    public int getTurn(){
+        return Long.bitCount(history.peek().getKey()) + Long.bitCount(history.peek().getValue());
+    }
+
     private Pair<Long, Long> convertToState(){
         long yellow = 0, red = 0, pow = 1;
 

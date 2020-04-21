@@ -7,27 +7,37 @@ public class Minimax {
 
     public static class Move {
         int move;
+        int turn;
         boolean isOptimal;
         int winner;
 
-        Move (int move_, boolean isOptimal_, int winner_){
+        Move (int move_, int turn_, boolean isOptimal_, int winner_){
             move = move_;
+            turn = turn_;
             isOptimal = isOptimal_;
             winner = winner_;
         }
 
         @Override
         protected Move clone(){
-            return new Move(move, isOptimal, winner);
+            return new Move(move, turn, isOptimal, winner);
         }
     }
 
     private static Move max(Move m1, Move m2){
+        if(m1.winner == m2.winner){ // try to extend the time until loss/draw
+            if(m1.turn > m2.turn) return m1;
+            else return m2;
+        }
         if(m1.winner > m2.winner) return m1;
         return m2;
     }
 
     private static Move min(Move m1, Move m2){
+        if(m1.winner == m2.winner){ // try to extend the time until loss/draw
+            if(m1.turn > m2.turn) return m1;
+            else return m2;
+        }
         if(m1.winner < m2.winner) return m1;
         return m2;
     }
@@ -41,18 +51,18 @@ public class Minimax {
 
         // game over
         if(moves.isEmpty()){
-            return new Move(-1, true, game.getWinner());
+            return new Move(-1, game.getTurn(), true, game.getWinner());
         }
 
         // reached max height
-        if(height < 0) return new Move(-1, false, 0);
+        if(height < 0) return new Move(-1, game.getTurn(),false, 0);
 
         // already calculated state
         if (dp.containsKey(game.getCurState())) return dp.get(game.getCurState()).clone();
 
         // test next moves
         Move cur;
-        Move best = new Move(-1, false,2 * Game.enemy(game.getCurPlayer()) );
+        Move best = new Move(-1, -1,false,2 * Game.enemy(game.getCurPlayer()) );
         int notOptimal = 0;
 
         for(int move : moves){
