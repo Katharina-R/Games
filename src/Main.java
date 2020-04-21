@@ -34,10 +34,7 @@ public class Main extends Application {
         userInputEnabled = false;
     }
 
-    private synchronized void handleCellPressed(int y) {
-
-        if(!userInputEnabled) return;
-
+    private void pressCell(int y){
         if(game.getCurPlayer() == Game.YELLOW){
             Platform.runLater(() -> gui.setStone(-1, y, Paint.valueOf(Style.YELLOW)));
         }
@@ -46,10 +43,11 @@ public class Main extends Application {
         }
     }
 
-    private synchronized void handleCellReleased(int y) {
+    private synchronized void handleCellPressed(int y) {
+        if(userInputEnabled) pressCell(y);
+    }
 
-        if(!userInputEnabled) return;
-
+    private void releaseCell(int y){
         try {
             Thread.sleep(150);
         } catch (InterruptedException e) {
@@ -58,11 +56,18 @@ public class Main extends Application {
         }
 
         Platform.runLater(() -> gui.setStone(-1, y, Paint.valueOf(Style.EMPTY)));
+    }
 
-        playerEvent = PlayerEvent.MOVE;
-        lastClicked = y;
+    private synchronized void handleCellReleased(int y) {
 
-        notify(); // notify gameThread in getPlayerEvent
+        if(userInputEnabled) {
+            releaseCell(y);
+
+            playerEvent = PlayerEvent.MOVE;
+            lastClicked = y;
+
+            notify(); // notify gameThread in getPlayerEvent
+        }
     }
 
     private synchronized void handleMouseClickOnMenu(PlayerEvent e) {
@@ -174,11 +179,15 @@ public class Main extends Application {
         long t = System.currentTimeMillis();
 
         Pair<Minimax.Move, Integer> res = Minimax.getMove(game, timeout);
-        if(res.getKey().isOptimal) System.out.format("%s will win!\n", playerText(res.getKey().winner));
+        System.out.format("Move: move(%d) isOptimal(%b) winner(%d)\n", res.getKey().move, res.getKey().isOptimal, res.getKey().winner);
 
         t = System.currentTimeMillis() - t;
-        System.out.format("Time: %d Depth: %d\n", t, res.getValue());
+        System.out.format("Time: %d turns: %d\n", t, res.getKey().turn - game.getTurn());
         Thread.sleep(Math.max(0, timeout - t));
+
+        // move animation
+        pressCell(res.getKey().move);
+        releaseCell(res.getKey().move);
 
         return res.getKey().move;
     }
