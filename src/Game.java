@@ -10,8 +10,8 @@ public class Game {
     public static final int N = 6; // rows
     public static final int M = 7; // columns
 
-    public static final int YELLOW = 1;
-    public static final int RED = -1;
+    public static final int YELLOW = 1000000000;
+    public static final int RED = -YELLOW;
     public static final int EMPTY = 0;
     private int player = YELLOW;
 
@@ -43,6 +43,38 @@ public class Game {
 
     public int getTurn(){
         return Long.bitCount(history.peek().getKey()) + Long.bitCount(history.peek().getValue());
+    }
+
+    private int getScore(int p){
+
+        int score = 0;
+
+        // check for winner
+        for(int x = 0; x < N; x++) {
+            for (int y = 0; y < M; y++) { // each starting position
+                for(int[] dir : DIR){ // each direction
+
+                    // sequence not fully inside
+                    if(!isInside(x + 3 * dir[0], y + 3 * dir[1])) continue;
+
+                    int countP = 0, countEnemy = 0;
+                    for(int i = 0; i < 4; i++){
+                        if(board[x + i * dir[0]][y + i * dir[1]] == p) countP++;
+                        else if(board[x + i * dir[0]][y + i * dir[1]] == enemy(p)) countEnemy++;
+                    }
+
+                    if(countEnemy == 0){
+                        score += countP;
+                    }
+                }
+            }
+        }
+
+        return score;
+    }
+
+    public int evaluateBoard(){
+        return getScore(YELLOW) - getScore(RED) + (player/YELLOW);
     }
 
     private Pair<Long, Long> convertToState(){

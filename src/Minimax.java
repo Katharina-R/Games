@@ -55,7 +55,7 @@ public class Minimax {
         }
 
         // reached max height
-        if(height < 0) return new Move(-1, game.getTurn(),false, 0);
+        if(height < 0) return new Move(-1, game.getTurn(),false, game.evaluateBoard());
 
         // already calculated state
         if (dp.containsKey(game.getCurState())) return dp.get(game.getCurState()).clone();
