@@ -15,6 +15,11 @@ public class Minimax {
             isOptimal = isOptimal_;
             winner = winner_;
         }
+
+        @Override
+        protected Move clone(){
+            return new Move(move, isOptimal, winner);
+        }
     }
 
     private static Move max(Move m1, Move m2){
@@ -43,7 +48,7 @@ public class Minimax {
         if(height < 0) return new Move(-1, false, 0);
 
         // already calculated state
-        if (dp.containsKey(game.getCurState())) return dp.get(game.getCurState());
+        if (dp.containsKey(game.getCurState())) return dp.get(game.getCurState()).clone();
 
         // test next moves
         Move cur;
@@ -52,7 +57,7 @@ public class Minimax {
 
         for(int move : moves){
             game.makeMove(move);
-            cur = solve(height -1, alpha, beta);
+            cur = solve(height - 1, alpha, beta);
             game.rollBack();
 
             if(!cur.isOptimal) notOptimal++;
@@ -74,7 +79,7 @@ public class Minimax {
         // set isOptimal for chosen move
         best.isOptimal = (notOptimal == 0) || (best.winner == game.getCurPlayer());
 
-        dp.put(game.getCurState(), best);
+        dp.put(game.getCurState(), best.clone());
         return best;
     }
 
