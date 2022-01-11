@@ -114,7 +114,7 @@ int main(){
 	Alphabet alphabet = getAlphabet();
 
 	while(true){
-		int lives = 10;
+		int lives = 7;
 		wstring secretWord = getSecretWord(alphabet);
 
 		// Game loop
