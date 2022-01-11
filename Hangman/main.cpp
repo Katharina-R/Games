@@ -74,6 +74,7 @@ wchar_t getLetter(const Alphabet& alphabet){
 		wcin >> letter;
 
 		if(alphabet.isValid(letter)) break;
+		else wcout << letter << "is not a valid letter!";
 	}
 
 	return letter;

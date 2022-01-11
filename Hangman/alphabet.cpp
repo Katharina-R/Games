@@ -33,7 +33,6 @@ class Alphabet {
 		wchar_t c = towupper(c_unsafe);
 		if(chars.contains(c) || specialChars.contains(c)) return true;
 
-		wcout << c << " is not a valid character!" << endl;
 		return false;
 	}
 
@@ -42,6 +41,7 @@ class Alphabet {
 		for(wchar_t c_unsafe : word){
 			wchar_t c = towupper(c_unsafe);
 			if(!isValid(c)) {
+				wcout << c << " is not a valid character!" << endl;
 				valid = false;
 			}
 		}
