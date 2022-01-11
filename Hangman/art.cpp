@@ -50,6 +50,6 @@ public:
 			}
 		}
 
-		wcout << art_cur << endl;			
+		wcout << art_cur << endl;
 	}
 };

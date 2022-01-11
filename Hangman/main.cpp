@@ -22,7 +22,7 @@ Alphabet getAlphabet(){
 	wstring specialChars;
 	getline(wcin, specialChars);
 
-	Alphabet alphabet(specialChars); 
+	Alphabet alphabet(specialChars);
 	alphabet.print();
 
 	return alphabet;
@@ -36,7 +36,7 @@ wstring getSecretWord(const Alphabet& alphabet){
 		wcout << "\n\nChoose a secret word: ";
 		wcin >> secretWord;
 		transform(secretWord.begin(), secretWord.end(), secretWord.begin(), towupper);
-		
+
 		// Check secret word
 		if(!alphabet.isValid(secretWord)){
 			alphabet.print();

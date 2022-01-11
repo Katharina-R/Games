@@ -6,7 +6,7 @@
 
 using namespace std;
 
-enum Used {YES, NO, MAYBE}; 
+enum Used {YES, NO, MAYBE};
 
 const vector<wchar_t> ALPHABET = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 const wstring RED = L"\033[31m";
@@ -21,13 +21,13 @@ class Alphabet {
  public:
   Alphabet(wstring specialChars_){
   	for(wchar_t c : ALPHABET) chars[c] = Used::MAYBE;
-  	for(wchar_t c : specialChars_) {
-  		c = towupper(c);
-  		if(!isValid(c)){
-  			specialChars[c] = Used::MAYBE;
+  		for(wchar_t c : specialChars_) {
+  			c = towupper(c);
+  			if(!isValid(c)){
+  				specialChars[c] = Used::MAYBE;
+  			}
   		}
   	}
-  }
 
 	bool isValid(const wchar_t c_unsafe) const {
 		wchar_t c = towupper(c_unsafe);
