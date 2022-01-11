@@ -1,12 +1,13 @@
 
-struct Hangman {
+class Hangman {
+private:
 	wstring art = L""
-	"                              6 5 5 5 5 5 5 5 5 5 5 5 5 5 5\n"
-	"                              6                           5\n"
-	"                              6                           5\n"
-	"                              6                           5\n"
-	"                              6                         4 4 4\n"
-	"                              6                        4     4\n"
+	"                              6 6 6 6 6 6 6 6 6 6 6 6 6 6 6\n"
+	"                              6         5                 6\n"
+	"                              6       5                   6\n"
+	"                              6     5                     6\n"
+	"                              6   5                     4 4 4\n"
+	"                              6 5                      4     4\n"
 	"                              6                         4 4 4\n"
 	"                              6                           3\n"
 	"                              6                           3\n"
@@ -30,9 +31,10 @@ struct Hangman {
 	" 7                                                        7\n"
 	"7                                                          7\n";
 
+public:
 	void print(int lives, int max_life){
 		if(lives == max_life) return;
-		
+
 		wstring art_cur = L"\n";
 		for(char c : art){
 			if('1' <= c && c <= '7'){
