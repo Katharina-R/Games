@@ -1,4 +1,5 @@
 #include "alphabet.cpp"
+#include "art.cpp"
 
 using namespace std;
 
@@ -115,6 +116,8 @@ int main(){
 
 	while(true){
 		int lives = 7;
+		int max_lives = 7;
+		Hangman hangman;
 		wstring secretWord = getSecretWord(alphabet);
 
 		// Game loop
@@ -133,6 +136,7 @@ int main(){
 				lives--;
 				alphabet.mark(letter, Used::NO);
 			}
+			hangman.print(lives, max_lives);
 
 			if(isGameOver(lives, secretWord, alphabet)) {
 				wcout << "The secret word was " << secretWord << endl;
